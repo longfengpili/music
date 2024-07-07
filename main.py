@@ -2,7 +2,7 @@
 # @Author: chunyang.xu
 # @Date:   2024-07-07 12:44:16
 # @Last Modified by:   chunyang.xu
-# @Last Modified time: 2024-07-07 12:54:07
+# @Last Modified time: 2024-07-07 13:56:52
 
 from pathlib import Path
 
@@ -25,5 +25,5 @@ if __name__ == '__main__':
     for song in songs:
         spath = song.as_posix()
         song = Song.from_file(spath)
-        song = song.update('artist-title')
+        song = song.save()
         mlogger.info(song)

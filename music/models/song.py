@@ -2,7 +2,7 @@
 # @Author: chunyang.xu
 # @Date:   2024-07-07 09:56:23
 # @Last Modified by:   chunyang.xu
-# @Last Modified time: 2024-07-07 13:55:32
+# @Last Modified time: 2024-07-07 14:11:00
 
 
 import re
@@ -52,7 +52,7 @@ class Song:
             return tvalue
 
         # 尝试不同的编码解码方式
-        encodings = ['LATIN1', 'UTF16', 'UTF16BE', 'UTF8']
+        encodings = ['latin1', 'utf-8', 'utf-16', 'utf-16-be']
         for encoding in encodings:
             try:
                 tvalue_decoded = tvalue.encode(encoding).decode('gbk')
@@ -75,13 +75,10 @@ class Song:
 
     def save(self):
         audio = self.audio
-        audio.tags.update({
-            'TIT2': TIT2(encoding=3, text=self.title),
-            'TPE1': TPE1(encoding=3, text=self.artist),
-            'TALB': TALB(encoding=3, text=self.album),
-            'COMM': COMM(encoding=3, lang='eng', text=self.comment),
-            **self.kwargs
-        })
+        audio.tags.add(TIT2(encoding=3, text=self.title))
+        audio.tags.add(TPE1(encoding=3, text=self.artist))
+        audio.tags.add(TALB(encoding=3, text=self.album))
+        audio.tags.add(COMM(encoding=3, text=self.comment, lang='eng'))
         audio.save()
         return self
 

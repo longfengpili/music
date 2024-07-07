@@ -2,14 +2,14 @@
 # @Author: chunyang.xu
 # @Date:   2024-07-07 09:56:23
 # @Last Modified by:   chunyang.xu
-# @Last Modified time: 2024-07-07 12:38:12
+# @Last Modified time: 2024-07-07 13:55:32
 
 
 import re
 from pathlib import Path
 
 import mutagen
-# from mutagen import File
+from mutagen import File as afile
 from mutagen.id3 import TIT2, TPE1, TALB, COMM, APIC
 
 
@@ -40,14 +40,37 @@ class Song:
     def __getattribute__(self, item: str):
         return super(Song, self).__getattribute__(item)
 
+    @staticmethod
+    def get_audio_tag(audio: afile, tag: str):
+        frame = audio.tags.get(tag)
+        if not frame:
+            return None
+
+        tvalue = frame.text[0]
+        # 检查原始文本是否包含中文
+        if re.search(r'[\u4e00-\u9fff1-9]+', tvalue):
+            return tvalue
+
+        # 尝试不同的编码解码方式
+        encodings = ['LATIN1', 'UTF16', 'UTF16BE', 'UTF8']
+        for encoding in encodings:
+            try:
+                tvalue_decoded = tvalue.encode(encoding).decode('gbk')
+                if re.search(r'[\u4e00-\u9fff]+', tvalue_decoded):
+                    return tvalue_decoded
+            except (UnicodeEncodeError, UnicodeDecodeError):
+                continue
+
+        return tvalue
+
     @classmethod
     def from_file(cls, file: str):
         audio = mutagen.File(file)
-        title = str(audio.tags.get('TIT2'))
-        artist = str(audio.tags.get('TPE1'))
+        title = cls.get_audio_tag(audio, 'TIT2')
+        artist = cls.get_audio_tag(audio, 'TPE1')
         file = Path(file)
-        album = str(audio.tags.get('TALB'))
-        comment = str(audio.tags.get('COMM::eng'))
+        album = cls.get_audio_tag(audio, 'TALB')
+        comment = cls.get_audio_tag(audio, 'COMM::eng')
         return cls(title, artist, file, album, comment)
 
     def save(self):
@@ -62,7 +85,7 @@ class Song:
         audio.save()
         return self
 
-    def update(self, pattern: str, sep: str = '-'):
+    def update_by_filename(self, pattern: str, sep: str = '-'):
         filename = self.file.stem
         psplits = pattern.split(sep)
         psplits = [p.strip() for p in psplits]

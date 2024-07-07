@@ -2,7 +2,7 @@
 # @Author: longfengpili
 # @Date:   2023-07-26 17:46:27
 # @Last Modified by:   chunyang.xu
-# @Last Modified time: 2024-07-07 14:01:56
+# @Last Modified time: 2024-07-07 14:24:55
 # @github: https://github.com/longfengpili
 
 
@@ -64,7 +64,7 @@ LOGGING_CONFIG = {
         # 默认的
         'default': {
             'level': 'INFO',
-            'class': 'pydbapi.conf.MakeFileHandler',  # 能够判断创建日持文件
+            'class': 'music.conf.MakeFileHandler',  # 能够判断创建日持文件
             'filename': os.path.join(LOG_BASE_PATH, f'{PROJECT_NAME}_default.log'),  # 日志文件
             'when': 'd',  # 每天备份
             'interval': 1,
@@ -74,7 +74,7 @@ LOGGING_CONFIG = {
         },
         'main': {
             'level': 'INFO',
-            'class': 'pydbapi.conf.MakeFileHandler',  # 保存到文件，自动切
+            'class': 'music.conf.MakeFileHandler',  # 保存到文件，自动切
             'filename': os.path.join(LOG_BASE_PATH, f'{PROJECT_NAME}_db.log'),  # 日志文件
             'when': 'd',  # 每小时备份
             'interval': 1,

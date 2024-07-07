@@ -2,7 +2,7 @@
 # @Author: chunyang.xu
 # @Date:   2024-07-07 09:56:23
 # @Last Modified by:   chunyang.xu
-# @Last Modified time: 2024-07-07 14:11:00
+# @Last Modified time: 2024-07-07 14:40:06
 
 
 import re
@@ -28,7 +28,7 @@ class Song:
         return mutagen.File(self.file)
 
     def __repr__(self):
-        return f"{self.title}({self.artist}) - {self.album}"
+        return f"{self.title}({self.artist}) - {self.album}[{self.file.parent.as_posix()}]"
 
     def __getattr__(self, item: str):
         if item in self.kwargs:

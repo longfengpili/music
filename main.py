@@ -2,7 +2,7 @@
 # @Author: chunyang.xu
 # @Date:   2024-07-07 12:44:16
 # @Last Modified by:   chunyang.xu
-# @Last Modified time: 2024-07-07 14:20:48
+# @Last Modified time: 2024-07-07 14:32:00
 
 import re
 import sys
@@ -41,6 +41,9 @@ if __name__ == '__main__':
     songs = get_songs(dirpath)
     for song in songs:
         spath = song.as_posix()
-        song = Song.from_file(spath)
-        song = song.save()
-        mlogger.info(song)
+        try:
+            song = Song.from_file(spath)
+            song = song.save()
+            mlogger.info(song)
+        except Exception as e:
+            mlogger.error(f'{spath}[{e}]')
